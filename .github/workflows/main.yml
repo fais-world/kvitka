@@ -1,0 +1,20 @@
+name: GCP Authentication
+on: [push]
+
+jobs:
+  auth:
+    permissions:
+      contents: read
+      id-token: write
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - id: gcp-auth
+      uses: google-github-actions/auth@v2
+      with:
+        workload_identity_provider: projects/fm8ai-438912/locations/global/workloadIdentityPools/wi-pool/providers/my-provider
+        service_account: my-service-account@fm8ai-438912.iam.gserviceaccount.com
+
+    - run: gcloud auth list
