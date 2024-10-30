@@ -6,15 +6,15 @@ jobs:
     permissions:
       contents: read
       id-token: write
-
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - id: gcp-auth
-      uses: google-github-actions/auth@v2
-      with:
-        workload_identity_provider: projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github
-        service_account: my-service-account@fm8ai-438912.iam.gserviceaccount.com
+      - id: gcp-auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: //iam.googleapis.com/projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github
+          service_account: artintel-api-service@fm8ai-438912.iam.gserviceaccount.com
+          audience: //iam.googleapis.com/projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github
 
-    - run: gcloud auth list
+      - run: gcloud auth list
