@@ -3,18 +3,15 @@ on: [push]
 
 jobs:
   auth:
+    runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write
-
-    runs-on: ubuntu-latest
+      id-token: write  # Required for Workload Identity Federation
     steps:
-    - uses: actions/checkout@v4
-
-    - id: gcp-auth
-      uses: google-github-actions/auth@v2
-      with:
-        workload_identity_provider: projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github
-        service_account: my-service-account@fm8ai-438912.iam.gserviceaccount.com
-
-    - run: gcloud auth list
+      - uses: actions/checkout@v4
+      - id: gcp-auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: "projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github"
+          service_account: "artintel-api-service@fm8ai-438912.iam.gserviceaccount.com"
+      - run: gcloud auth list
