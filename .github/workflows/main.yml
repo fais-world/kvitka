@@ -8,7 +8,7 @@ jobs:
       contents: read
       id-token: write  # Required for Workload Identity Federation
     steps:
-      - uses: actions/checkout@v4  # Check out your repository code
+      - uses: actions/checkout@v4  # Checkout your code repository
 
       # Authenticate with Google Cloud using Workload Identity Federation
       - id: gcp-auth
@@ -16,6 +16,8 @@ jobs:
         with:
           workload_identity_provider: "projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github"
           service_account: "artintel-api-service@fm8ai-438912.iam.gserviceaccount.com"
+          # Specify the path to the configuration file
+          credential_source_file: ".github/clientLibraryConfig-github.json"
 
-      # Test authentication
+      # Verify authentication
       - run: gcloud auth list
