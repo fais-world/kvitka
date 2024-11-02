@@ -1,0 +1,1 @@
+principal://iam.googleapis.com/projects/891197171034/locations/europe-west1/workloadIdentityPools/github-pool/subject/sub=repo:fais-world/kvitka:ref:refs/heads/main 
