@@ -16,8 +16,8 @@ jobs:
         with:
           workload_identity_provider: "projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github"
           service_account: "artintel-api-service@fm8ai-438912.iam.gserviceaccount.com"
-          # Specify the path to the configuration file
-          credential_source_file: ".github/clientLibraryConfig-github.json"
+          # Optionally, provide credentials directly via JSON
+          credentials_json: ${{ secrets.SERVICE_ACCOUNT_JSON }}
 
       # Verify authentication
       - run: gcloud auth list
