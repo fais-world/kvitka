@@ -1,0 +1,50 @@
+steps:
+  # Step 1: Authenticate with Google Cloud using your Service Account JSON
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'auth'
+      - 'activate-service-account'
+      - '--key-file=/workspace/$SERVICE_ACCOUNT_JSON'
+
+  # Step 2: Set the Google Cloud project
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'config'
+      - 'set'
+      - 'project'
+      - '$PROJECT_ID'
+
+  # Step 3: Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/my-app'
+      - '.'
+
+  # Step 4: Push the Docker image to Google Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/my-app'
+
+  # Step 5: Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'my-app'
+      - '--image=gcr.io/$PROJECT_ID/my-app'
+      - '--platform=managed'
+      - '--region=$REGION'
+      - '--allow-unauthenticated'
+
+images:
+  - 'gcr.io/$PROJECT_ID/my-app'
+
+substitutions:
+  _SERVICE_ACCOUNT_JSON: 'projects/891197171034/secrets/SERVICE_ACCOUNT_JSON'
+  _REGION: 'europe-west1'
