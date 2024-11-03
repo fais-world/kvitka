@@ -1,4 +1,3 @@
-# Updated Google Cloud Build Configuration: cloudbuild.yaml
 steps:
   # Step 1: Install dependencies from requirements.txt
   - name: 'python:3.10'
@@ -25,19 +24,19 @@ steps:
       - '--image'
       - 'gcr.io/$PROJECT_ID/my-image'
       - '--region'
-      - 'europe-west1'
+      - '${_REGION}'
       - '--platform'
       - 'managed'
 
 substitutions:
-  _SERVICE_ACCOUNT_JSON: 'projects/891197171034/secrets/SERVICE_ACCOUNT_JSON'
   _REGION: 'europe-west1'
 
 options:
+  logging: CLOUD_LOGGING_ONLY
   logsBucket: "gs://flort"
 
-options:
-  logging: CLOUD_LOGGING_ONLY
-  _SERVICE_ACCOUNT_JSON: "projects/891197171034/secrets/SERVICE_ACCOUNT_JSON/versions/1"
 images:
   - 'gcr.io/$PROJECT_ID/my-image'
+
+secrets:
+  - kmsKeyName: "projects/891197171034/secrets/SERVICE_ACCOUNT_JSON/versions/1"
