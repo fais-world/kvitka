@@ -1,7 +1,3 @@
-Thank you for clarifying! Based on this updated information, here’s a revised version of the **README.md** for Kvitka, with accurate descriptions of **Arti** and **Floya** as GPT agents created to assist with workflow, file management, and the overall development of the **Kvitka Poloniny** project.
-
----
-
 # Kvitka Project
 
 Kvitka Poloniny is a medical AI chatbot project designed to leverage the capabilities of advanced AI agents to streamline and assist in healthcare workflows, file management, and project organization. The project incorporates specialized GPT agents **Arti** and **Floya**, each tailored to support specific aspects of the development process.
