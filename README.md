@@ -84,6 +84,3 @@ This project is licensed under the MIT License. See the `LICENSE` file for detai
 
 For questions or support, please open an issue on this repository, or reach out to the project maintainers.
 
----
-
-This README should now better reflect the roles of Arti and Floya as specialized GPT agents for managing the workflow and project structure of Kvitka Poloniny. Let me know if there’s anything else you’d like to include!
