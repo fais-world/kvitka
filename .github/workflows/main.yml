@@ -14,26 +14,20 @@ jobs:
       id-token: write  # Required for Workload Identity Federation
 
     steps:
-      # Step 1: Set up Google Cloud SDK (optional if not already installed)
-      - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
-        with:
-          project_id: "fm8ai-438912"  # Replace with your actual project ID
-
-      # Step 2: Authenticate with Google Cloud using Workload Identity Federation
+      # Step 1: Authenticate with Google Cloud using Workload Identity Federation
       - id: gcp-auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          project_id: "fm8ai-438912"  # Replace with your actual project ID
+          project_id: "fm8ai-438912"
           workload_identity_provider: "projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github"
           service_account: "artintel-api-service@fm8ai-438912.iam.gserviceaccount.com"
 
-      # Step 3: Verify authentication with gcloud (optional, for debugging purposes)
+      # Step 2: Verify authentication with gcloud (optional, for debugging purposes)
       - name: Verify Authentication
         run: gcloud auth list
 
-      # Step 4: Generate and store the Bearer token in a secure environment variable
+      # Step 3: Generate and store the Bearer token
       - name: Generate Google Cloud Access Token
         id: generate_token
         run: |
