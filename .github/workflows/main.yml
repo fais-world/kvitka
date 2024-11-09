@@ -1,20 +1,24 @@
-name: GCP Authentication and Google Drive Token Generation
+name: GCP Authentication, Google Drive Setup, and Token Generation
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:  # Allows manual trigger of the workflow
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
-  generate_bearer_token:
+  setup-drive-structure-and-token:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       id-token: write  # Required for Workload Identity Federation
 
     steps:
-      # Step 1: Authenticate with Google Cloud using Workload Identity Federation
+      # Step 1: Check out the repository code
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Step 2: Authenticate with Google Cloud using Workload Identity Federation
       - id: gcp-auth
         name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v2
@@ -23,13 +27,60 @@ jobs:
           workload_identity_provider: "projects/891197171034/locations/global/workloadIdentityPools/github-pool/providers/github"
           service_account: "artintel-api-service@fm8ai-438912.iam.gserviceaccount.com"
 
-      # Step 2: Verify authentication with gcloud (optional, for debugging purposes)
+      # Step 3: Verify authentication with gcloud (optional for debugging)
       - name: Verify Authentication
         run: gcloud auth list
 
-      # Step 3: Generate and store the Bearer token
+      # Step 4: Generate and store the Google Cloud Access Token
       - name: Generate Google Cloud Access Token
         id: generate_token
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
           echo "ACCESS_TOKEN=$ACCESS_TOKEN" >> $GITHUB_ENV
+
+      # Step 5: Create the "kvitka" folder in "fAis" on Google Drive
+      - name: Create kvitka Folder
+        run: |
+          curl -X POST \
+            -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+                "name": "kvitka",
+                "mimeType": "application/vnd.google-apps.folder",
+                "parents": ["0AKkSUpBOGEq8Uk9PVA"]
+              }' \
+            "https://www.googleapis.com/drive/v3/files"
+
+      # Step 6: Create subfolders in Google Drive under "kvitka"
+      - name: Create Subfolders
+        run: |
+          folders=("docs" "src" "tests" "config")
+          parent_id="1VynvxWzOBtZ3LOb7GZNzRriTF0nJGLMr"
+          for folder in "${folders[@]}"; do
+            curl -X POST \
+              -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                  "name": "'"$folder"'",
+                  "mimeType": "application/vnd.google-apps.folder",
+                  "parents": ["'"$parent_id"'"]
+                }' \
+              "https://www.googleapis.com/drive/v3/files"
+          done
+
+      # Step 7: Create additional specific subfolders under "src" for floya, arti, and shared
+      - name: Create Subfolders under src
+        run: |
+          subfolders=("floya" "arti" "shared")
+          src_parent_id="1lRY8B4Jo_Q35hfwbvLDwDl-WKYNTq6Ng"
+          for subfolder in "${subfolders[@]}"; do
+            curl -X POST \
+              -H "Authorization: Bearer ${{ env.ACCESS_TOKEN }}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                  "name": "'"$subfolder"'",
+                  "mimeType": "application/vnd.google-apps.folder",
+                  "parents": ["'"$src_parent_id"'"]
+                }' \
+              "https://www.googleapis.com/drive/v3/files"
+          done
