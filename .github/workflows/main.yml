@@ -1,9 +1,3 @@
-GCP Authentication and Google Drive Structure Setup
-ID folders added main.yml #22
-Jobs
-Run details
-Workflow file for this run
-.github/workflows/main.yml at 46248cd
 name: GCP Authentication and Google Drive Structure Setup
 on: [push]
 
