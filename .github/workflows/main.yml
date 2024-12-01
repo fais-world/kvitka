@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI/CD Pipeline for Kvitka Backend
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the Code
+    # Step 1: Checkout Code
     - name: Checkout Code
       uses: actions/checkout@v3
 
@@ -24,17 +24,18 @@ jobs:
     # Step 3: Build and Push Docker Image
     - name: Build and Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKER_USERNAME }}/kvitka-chatbot:latest .
-        docker push ${{ secrets.DOCKER_USERNAME }}/kvitka-chatbot:latest
+        docker build -t faistudio/kvitka-backend:latest .
+        docker push faistudio/kvitka-backend:latest
 
-    # Step 4: Deploy (Optional)
-    # Add deployment steps here if you're deploying to a specific platform like Render or Railway.
+    - name: Run Docker Container
+      run: |
+        docker run -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} faistudio/kvitka-backend
 
   test:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the Code
+    # Step 1: Checkout Code
     - name: Checkout Code
       uses: actions/checkout@v3
 
