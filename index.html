@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        #chat-container {
+            width: 400px;
+            height: 600px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+        #messages {
+            flex: 1;
+            padding: 10px;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+        }
+        .message {
+            margin: 5px 0;
+        }
+        .user-message {
+            color: blue;
+            font-weight: bold;
+        }
+        .bot-message {
+            color: green;
+        }
+        #input-container {
+            display: flex;
+            border-top: 1px solid #ccc;
+        }
+        #user-input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+        #send-button {
+            padding: 10px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 0 0 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="messages"></div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type your message..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById("messages");
+        const userInput = document.getElementById("user-input");
+        const sendButton = document.getElementById("send-button");
+
+        const apiURL = "http://127.0.0.1:5000/api/chat"; // Your local Flask API URL
+
+        sendButton.addEventListener("click", async () => {
+            const query = userInput.value.trim();
+            if (!query) return;
+
+            // Add user message to chat
+            const userMessageDiv = document.createElement("div");
+            userMessageDiv.textContent = `You: ${query}`;
+            userMessageDiv.className = "message user-message";
+            messagesDiv.appendChild(userMessageDiv);
+
+            // Clear input
+            userInput.value = "";
+
+            // Send message to backend API
+            try {
+                const response = await fetch(apiURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ query }),
+                });
+                const data = await response.json();
+
+                // Add bot response to chat
+                const botMessageDiv = document.createElement("div");
+                botMessageDiv.textContent = `Bot: ${data.response}`;
+                botMessageDiv.className = "message bot-message";
+                messagesDiv.appendChild(botMessageDiv);
+
+                // Auto-scroll to the bottom
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } catch (error) {
+                console.error("Error:", error);
+                const errorMessageDiv = document.createElement("div");
+                errorMessageDiv.textContent = "Bot: Sorry, something went wrong.";
+                errorMessageDiv.className = "message bot-message";
+                messagesDiv.appendChild(errorMessageDiv);
+            }
+        });
+    </script>
+</body>
+</html>
