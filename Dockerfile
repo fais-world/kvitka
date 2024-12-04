@@ -1,20 +1,14 @@
-# Use the official Python slim image
 FROM python:3.13-slim
 
-# Set the working directory in the container
 WORKDIR /app
 
-# Copy the requirements file into the container
+# Install dependencies
 COPY requirements.txt .
-
-# Install dependencies (including gunicorn)
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application code
-COPY . .
+# Copy application code
+COPY src/ /app/src
+WORKDIR /app/src
 
-# Expose the port Flask will run on
-EXPOSE 5000
-
-# Use Gunicorn as the production WSGI server
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "src.app:app"]
+# Expose the app on port 8080
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "app:app"]
