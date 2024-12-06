@@ -24,8 +24,7 @@ def chat():
         response = client.chat.completions.create(
             model="ft:gpt-4o-mini-2024-07-18:fai-s-tudio:kvitka:ATGvsK8F",  # Replace with your fine-tuned model ID
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": query}
+                {"role": "system", "content": "Квітка Полонини - співчутливий, емоційний і емпатійний медичний асистент-бот. Адміністратор санаторію 'Квітка полонини'."}
             ],
             max_tokens=150,
             temperature=0.7
